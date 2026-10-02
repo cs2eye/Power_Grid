@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Power Grid vs Computer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <h1>Power Grid <small>vs computer</small></h1>
+  </div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="bar-actions">
+    <button type="button" id="btn-speed" class="ghost">AI speed: Normal</button>
+    <button type="button" id="btn-new" class="ghost">New game</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="board">
+    <div class="map-wrap">
+      <svg id="map" role="img" aria-label="Map of cities and connection costs"></svg>
+      <p class="map-hint" id="map-hint"></p>
+    </div>
+    <div id="players" class="players"></div>
+  </section>
+
+  <aside class="side">
+    <section id="action" class="panel action" aria-live="polite"></section>
+    <section class="panel">
+      <div class="panel-head"><h2>Power plant market</h2><span class="meta" id="deck-count"></span></div>
+      <div id="plants" class="market"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Resource market</h2><span class="meta">price per unit</span></div>
+      <div id="resources" class="resmarket"></div>
+    </section>
+    <section class="panel log-panel">
+      <div class="panel-head"><h2>Game log</h2></div>
+      <ol id="log" class="log"></ol>
+    </section>
+  </aside>
+</main>
+
+<div class="overlay" id="setup" hidden>
+  <form class="setup" id="setup-form">
+    <h2>New game</h2>
+    <label for="opt-name">Your name</label>
+    <input id="opt-name" name="name" maxlength="16" value="You" autocomplete="off">
+    <label for="opt-opponents">Computer opponents</label>
+    <select id="opt-opponents" name="opponents">
+      <option value="1" selected>1 opponent (2-player rules)</option>
+      <option value="2">2 opponents</option>
+      <option value="3">3 opponents</option>
+    </select>
+    <fieldset>
+      <legend>Your colour</legend>
+      <div class="swatches" id="opt-colors"></div>
+    </fieldset>
+    <details>
+      <summary>How a round works</summary>
+      <ol class="rules">
+        <li><b>Auction.</b> In turn order, each player may put a plant up for auction. Everyone who hasn't bought yet can bid. You must buy one in round 1.</li>
+        <li><b>Resources.</b> Last place buys first. Plants store up to twice what they burn.</li>
+        <li><b>Build.</b> Last place builds first. Pay the city slot (10, 15, 20) plus connection costs from your network.</li>
+        <li><b>Bureaucracy.</b> Burn fuel to power cities and get paid. The market restocks.</li>
+      </ol>
+      <p class="rules-foot">Turn order: most cities first, ties broken by the biggest plant. The game ends when a network reaches the target size; most cities powered in that last round wins, then money.</p>
+    </details>
+    <div class="setup-actions">
+      <button type="button" class="ghost" id="setup-cancel">Cancel</button>
+      <button type="submit" class="primary">Start game</button>
+    </div>
+  </form>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>

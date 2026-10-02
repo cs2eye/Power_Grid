@@ -1,0 +1,9 @@
+{
+  "name": "power-grid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser version of Power Grid to play against computer opponents",
+  "scripts": {
+    "test": "node test/simulate.js 120"
+  }
+}
