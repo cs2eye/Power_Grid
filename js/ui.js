@@ -3,23 +3,29 @@
   const { Engine: E, AI, PLANTS, RESOURCES, CITIES, EDGES, REGIONS, PAYOUT, SLOT_PRICES } = window.PG;
 
   const PLAYER_COLORS = [
-    { name: 'Blue', value: '#2f6fd6' },
-    { name: 'Red', value: '#d8432b' },
-    { name: 'Green', value: '#22966a' },
-    { name: 'Violet', value: '#8b52cc' },
-    { name: 'Cyan', value: '#1499b8' },
-    { name: 'Pink', value: '#d6449a' },
+    { name: 'Yellow', value: '#f2c21b' },
+    { name: 'Dark gray', value: '#4a4f55' },
+    { name: 'Pink', value: '#e0529c' },
+    { name: 'Cyan', value: '#17b3d1' },
+    { name: 'Red', value: '#d93a2b' },
+    { name: 'Bright green', value: '#3cc43c' },
   ];
+  // Black or white, whichever reads better on a player colour.
+  const textOn = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+    return 0.299 * r + 0.587 * g + 0.114 * b > 0.6 ? '#111' : '#fff';
+  };
   const AI_NAMES = ['Volta', 'Tesla', 'Ampère', 'Faraday', 'Edison'];
   const SAVE_KEY = 'power-grid-save-v1';
   const PREF_KEY = 'power-grid-prefs-v1';
   const SPEEDS = { Normal: 750, Fast: 200, Slow: 1400 };
   // Where to put a city's name when the default (below) would collide.
-  const LABEL_SIDE = { nyc: 'r', phl: 'r', bos: 'r', was: 'l', bhm: 'l', lax: 'l', las: 'a', orf: 'a', det: 'l', buf: 'a', mem: 'a', tpa: 'l' };
+  const LABEL_SIDE = { nyc: 'r', phl: 'r', bos: 'a', was: 'l', bhm: 'l', lax: 'l', las: 'a', orf: 'a', det: 'l', buf: 'a', mem: 'a', tpa: 'l' };
 
   let game = null;
   let ui = freshUI();
   let prefs = loadJSON(PREF_KEY) || { speed: 'Normal', name: 'You', color: PLAYER_COLORS[0].value, opponents: 1 };
+  if (!PLAYER_COLORS.some((c) => c.value === prefs.color)) prefs.color = PLAYER_COLORS[0].value;
   let aiTimer = null;
 
   const $ = (id) => document.getElementById(id);
@@ -267,7 +273,7 @@
       const held = RESOURCES.filter((r) => p.resources[r]).map((r) => `<span><span class="tok ${r}"></span>${p.resources[r]}</span>`).join('') || '<span class="meta">no fuel stored</span>';
       const last = game.lastPower[pid];
       return `<article class="pboard${isActive ? ' active' : ''}">
-        <header><span class="turn" style="--pc:${p.color}" title="${ordinal(turn)} in turn order" aria-label="${ordinal(turn)} in turn order">${turn}</span><h3>${esc(p.name)}</h3>
+        <header><span class="turn" style="--pc:${p.color};--pct:${textOn(p.color)}" title="${ordinal(turn)} in turn order" aria-label="${ordinal(turn)} in turn order">${turn}</span><h3>${esc(p.name)}</h3>
           <span class="order">${p.isAI ? 'computer' : 'you'}</span></header>
         <div class="stats">
           <div class="stat">${money}<span>Elektro</span></div>

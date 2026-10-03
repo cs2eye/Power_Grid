@@ -141,7 +141,7 @@ button.ghost { background: transparent; }
 .pboard header { display: flex; align-items: center; gap: 8px; }
 .pboard .turn {
   flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--pc); color: #fff; font: 800 1.15rem/1 var(--font-display);
+  background: var(--pc); color: var(--pct, #fff); font: 800 1.15rem/1 var(--font-display);
   box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--pc);
 }
 .pboard h3 { font-size: 1.2rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

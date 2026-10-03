@@ -7,7 +7,7 @@ require('../js/ai.js');
 const { Engine: E, AI, RESOURCES, RESOURCE_TOTAL, PLANTS } = globalThis.PG;
 
 const games = Number(process.argv[2] || 60);
-const COLORS = ['red', 'blue', 'green', 'purple', 'teal', 'pink'];
+const COLORS = ['#f2c21b', '#4a4f55', '#e0529c', '#17b3d1', '#d93a2b', '#3cc43c'];
 
 function checkInvariants(s) {
   for (const r of RESOURCES) {
