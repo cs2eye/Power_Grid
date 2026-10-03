@@ -7,13 +7,15 @@
     { name: 'Red', value: '#d8432b' },
     { name: 'Green', value: '#22966a' },
     { name: 'Violet', value: '#8b52cc' },
+    { name: 'Cyan', value: '#1499b8' },
+    { name: 'Pink', value: '#d6449a' },
   ];
-  const AI_NAMES = ['Volta', 'Tesla', 'Ampère'];
+  const AI_NAMES = ['Volta', 'Tesla', 'Ampère', 'Faraday', 'Edison'];
   const SAVE_KEY = 'power-grid-save-v1';
   const PREF_KEY = 'power-grid-prefs-v1';
   const SPEEDS = { Normal: 750, Fast: 200, Slow: 1400 };
   // Where to put a city's name when the default (below) would collide.
-  const LABEL_SIDE = { nyc: 'r', phl: 'r', bos: 'r', was: 'l', bhm: 'l', lax: 'l', las: 'a', orf: 'r', det: 'l', buf: 'a', mem: 'a', tpa: 'l' };
+  const LABEL_SIDE = { nyc: 'r', phl: 'r', bos: 'r', was: 'l', bhm: 'l', lax: 'l', las: 'a', orf: 'a', det: 'l', buf: 'a', mem: 'a', tpa: 'l' };
 
   let game = null;
   let ui = freshUI();
@@ -254,7 +256,7 @@
   }
 
   function renderPlayers(pend) {
-    const ordinal = (n) => ['1st', '2nd', '3rd', '4th'][n - 1];
+    const ordinal = (n) => ['1st', '2nd', '3rd', '4th', '5th', '6th'][n - 1];
     const hide = game.options?.hideAIMoney && game.phase !== 'gameover';
     $('players').innerHTML = game.players.map((p) => {
       const pid = p.id;
@@ -383,7 +385,7 @@
           <p>Click cities on the map. Each costs ${game.step === 1 ? '10' : '10 / 15' + (game.step === 3 ? ' / 20' : '')} for the slot plus connections from your network.</p>
           ${cart.length ? `<ol class="cart-list">${cart.map((id) => `<li>${esc(CITIES[id].name)}</li>`).join('')}</ol>` : '<p class="meta">No cities selected.</p>'}
           <div class="summary"><span>Slots ${cost.slots} + links ${cost.connection} = ${cost.total}</span><span>Left ${me.money - cost.total}</span></div>
-          <p class="meta">You'll have ${me.cities.length + cart.length} cities; your fuelled plants can power ${fueled}.</p>
+          <p class="meta">You'll have ${me.cities.length + cart.length} ${me.cities.length + cart.length === 1 ? 'city' : 'cities'}; your fuelled plants can power ${fueled}.</p>
           <div class="row"><button type="button" class="primary" data-act="build"${cost.total > me.money ? ' disabled' : ''}>${cart.length ? `Build ${cart.length} for ${cost.total}` : 'Build nothing'}</button>
           ${cart.length ? '<button type="button" data-act="clear-build">Clear</button>' : ''}
           <button type="button" data-act="suggest-build">Suggest</button></div>${err}`;

@@ -237,7 +237,7 @@
   // ---------- setup ----------
   function newGame(opts) {
     const n = opts.players.length;
-    if (!RULES[n]) throw new Error('Power Grid supports 2 to 4 players here.');
+    if (!RULES[n]) throw new Error('Power Grid supports 2 to 6 players.');
     const s = {
       version: 1,
       rng: (opts.seed ?? Math.floor(Math.random() * 2 ** 32)) >>> 0,

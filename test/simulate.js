@@ -7,7 +7,7 @@ require('../js/ai.js');
 const { Engine: E, AI, RESOURCES, RESOURCE_TOTAL, PLANTS } = globalThis.PG;
 
 const games = Number(process.argv[2] || 60);
-const COLORS = ['red', 'blue', 'green', 'purple'];
+const COLORS = ['red', 'blue', 'green', 'purple', 'teal', 'pink'];
 
 function checkInvariants(s) {
   for (const r of RESOURCES) {
@@ -42,7 +42,7 @@ assert.strictEqual(chosen.options.hideAIMoney, true);
 
 const stats = {};
 for (let g = 0; g < games; g++) {
-  const n = 2 + (g % 3);
+  const n = 2 + (g % 5);
   const s = E.newGame({
     seed: 1000 + g,
     players: Array.from({ length: n }, (_, i) => ({ name: `AI ${i + 1}`, color: COLORS[i], isAI: true })),

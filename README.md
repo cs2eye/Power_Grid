@@ -1,6 +1,6 @@
 # Power Grid vs Computer
 
-A browser version of the board game Power Grid for one human against 1–3 computer opponents.
+A browser version of the board game Power Grid for one human against 1–5 computer opponents.
 It's plain HTML, CSS and JavaScript with no build step and no dependencies.
 
 ## Play
@@ -15,15 +15,15 @@ board shows that player's current position in turn order.
 ## What's implemented
 
 - **Map:** 42 US cities in six regions. Each game uses a random connected set of regions
-  (3 regions for 2–3 players, 4 for 4 players). Connection costs come from distance, with a
+  (3 regions for 2–3 players, 4 for 4 players, 5 for 5–6 players). Connection costs come from distance, with a
   surcharge across the Rockies and the Sierra.
 - **All five phases:** turn order, plant auctions (with forced buying in round 1 and scrapping
   plants over the limit), resource buying with storage limits, building with cheapest-route
   connection costs, and bureaucracy with payouts and market restocking.
-- **Steps 1–3:** Step 2 starts when a network reaches 10 cities (2 players) or 7 cities (3–4);
+- **Steps 1–3:** Step 2 starts when a network reaches 10 cities (2 players), 7 cities (3–5) or 6 (6 players);
   Step 3 starts when its card comes up. Obsolete plants leave the market, and the market
   restocks at each player count's own rates.
-- **Game end:** 21 cities (2 players) or 17 cities (3–4). The most cities powered in that round
+- **Game end:** 21 cities (2 players), 17 (3–4), 15 (5) or 14 (6). The most cities powered in that round
   wins, then money, then cities.
 
 Plant stats, resource prices, restocking tables and payouts follow the published game.
@@ -53,6 +53,6 @@ unless it expects to win.
 npm test
 ```
 
-This plays 120 complete games with 2–4 computer players. After every action it checks that
+This plays 120 complete games with 2–6 computer players. After every action it checks that
 resources are conserved, money never goes negative, city slots and plant limits hold, and
 that every game finishes.

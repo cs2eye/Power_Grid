@@ -38,6 +38,8 @@
     2: { coal: [3, 4, 3], oil: [2, 2, 4], garbage: [1, 2, 3], uranium: [1, 1, 1] },
     3: { coal: [4, 5, 3], oil: [2, 3, 4], garbage: [1, 2, 3], uranium: [1, 1, 1] },
     4: { coal: [5, 6, 4], oil: [3, 4, 5], garbage: [2, 3, 4], uranium: [1, 2, 2] },
+    5: { coal: [5, 7, 5], oil: [4, 5, 6], garbage: [3, 3, 5], uranium: [2, 3, 2] },
+    6: { coal: [7, 9, 6], oil: [5, 6, 7], garbage: [3, 5, 6], uranium: [2, 3, 3] },
   };
 
   // Cash paid for powering N cities.
@@ -47,6 +49,8 @@
     2: { regions: 3, removePlants: 8, maxPlants: 4, step2: 10, end: 21 },
     3: { regions: 3, removePlants: 8, maxPlants: 3, step2: 7, end: 17 },
     4: { regions: 4, removePlants: 4, maxPlants: 3, step2: 7, end: 17 },
+    5: { regions: 5, removePlants: 0, maxPlants: 3, step2: 7, end: 15 },
+    6: { regions: 5, removePlants: 0, maxPlants: 3, step2: 6, end: 14 },
   };
 
   const CITY_SLOT_COST = [10, 15, 20];
