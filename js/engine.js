@@ -53,6 +53,20 @@
     return d;
   }
 
+  // True when `list` names `count` distinct regions that form one connected area.
+  function regionsValid(list, count) {
+    if (!Array.isArray(list) || list.length !== count || new Set(list).size !== count) return false;
+    if (!list.every((r) => REGIONS[r])) return false;
+    const seen = new Set([list[0]]);
+    const queue = [list[0]];
+    while (queue.length) {
+      for (const r of REGIONS[queue.shift()].adj) {
+        if (list.includes(r) && !seen.has(r)) { seen.add(r); queue.push(r); }
+      }
+    }
+    return seen.size === count;
+  }
+
   function pickRegions(s, count) {
     const all = Object.keys(REGIONS);
     const chosen = [all[Math.floor(rand(s) * all.length)]];
@@ -228,6 +242,7 @@
       version: 1,
       rng: (opts.seed ?? Math.floor(Math.random() * 2 ** 32)) >>> 0,
       rules: RULES[n],
+      options: { hideAIMoney: !!opts.hideAIMoney },
       players: opts.players.map((p, i) => ({
         id: i, name: p.name, color: p.color, isAI: !!p.isAI,
         money: START_MONEY, plants: [], cities: [],
@@ -254,7 +269,10 @@
       log: [],
     };
     for (const r of RESOURCES) s.supply[r] = RESOURCE_TOTAL[r] - RESOURCE_START[r];
-    s.regions = opts.regions || pickRegions(s, s.rules.regions);
+    if (opts.regions && !regionsValid(opts.regions, s.rules.regions)) {
+      throw new Error(`Choose ${s.rules.regions} regions that border each other.`);
+    }
+    s.regions = opts.regions ? opts.regions.slice() : pickRegions(s, s.rules.regions);
     s.activeCities = Object.keys(CITIES).filter((id) => s.regions.includes(CITIES[id].region));
     for (const id of s.activeCities) s.cityOwners[id] = [];
 
@@ -610,7 +628,7 @@
   }
 
   PG.Engine = {
-    STEP3, newGame, pending, act, distances, buildCost, connectionCost, capacityOf, storageCaps,
+    STEP3, newGame, pending, regionsValid, act, distances, buildCost, connectionCost, capacityOf, storageCaps,
     canHold, canRun, fuelNeeds, bestPower, unitPrice, resourceCost, currentPlants, futurePlants,
     maxCities, slotsAllowed,
   };

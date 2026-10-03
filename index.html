@@ -63,6 +63,17 @@
       <legend>Your colour</legend>
       <div class="swatches" id="opt-colors"></div>
     </fieldset>
+    <fieldset>
+      <legend>Regions in play</legend>
+      <div class="seg" role="radiogroup">
+        <label><input type="radio" name="regionMode" value="random" id="opt-region-random"> Random</label>
+        <label><input type="radio" name="regionMode" value="pick" id="opt-region-pick"> Let me choose</label>
+      </div>
+      <div class="region-picks" id="opt-regions"></div>
+      <p class="hint" id="region-hint"></p>
+    </fieldset>
+    <label class="check-row" for="opt-hide"><input type="checkbox" id="opt-hide" name="hideMoney"> Hide the computer players' money</label>
+    <p class="err" id="setup-error" role="alert" hidden></p>
     <details>
       <summary>How a round works</summary>
       <ol class="rules">

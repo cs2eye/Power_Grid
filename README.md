@@ -7,8 +7,10 @@ It's plain HTML, CSS and JavaScript with no build step and no dependencies.
 
 Open `index.html` in a browser, either by double-clicking it or by serving the folder
 (`python3 -m http.server`). The game saves to your browser after every move, so a reload picks up
-where you left off. Use **New game** to change your name, colour or number of opponents, and
-**AI speed** to change how fast the computer moves.
+where you left off. Use **New game** to change your name, colour or number of opponents, pick which regions
+are in play (or leave it random), and hide the computer players' money. **AI speed** changes
+how fast the computer moves. Player boards stay in fixed places; the numbered badge on each
+board shows that player's current position in turn order.
 
 ## What's implemented
 

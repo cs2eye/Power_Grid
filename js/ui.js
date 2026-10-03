@@ -39,7 +39,8 @@
     const others = PLAYER_COLORS.map((c) => c.value).filter((c) => c !== humanColor);
     const players = [{ name: opts.name || 'You', color: humanColor, isAI: false }];
     for (let i = 0; i < opts.opponents; i++) players.push({ name: AI_NAMES[i], color: others[i], isAI: true });
-    game = E.newGame({ players });
+    const regions = opts.regionMode === 'pick' ? opts.regions : null;
+    game = E.newGame({ players, regions, hideAIMoney: opts.hideMoney });
     ui = freshUI();
     update();
   }
@@ -253,17 +254,21 @@
   }
 
   function renderPlayers(pend) {
-    $('players').innerHTML = game.order.map((pid, idx) => {
-      const p = game.players[pid];
+    const ordinal = (n) => ['1st', '2nd', '3rd', '4th'][n - 1];
+    const hide = game.options?.hideAIMoney && game.phase !== 'gameover';
+    $('players').innerHTML = game.players.map((p) => {
+      const pid = p.id;
+      const turn = game.order.indexOf(pid) + 1;
+      const money = hide && p.isAI ? '<b title="Hidden">?</b>' : `<b>${p.money}</b>`;
       const isActive = pend.type !== 'gameover' && pend.player === pid;
       const cap = E.capacityOf(p.plants);
       const held = RESOURCES.filter((r) => p.resources[r]).map((r) => `<span><span class="tok ${r}"></span>${p.resources[r]}</span>`).join('') || '<span class="meta">no fuel stored</span>';
       const last = game.lastPower[pid];
       return `<article class="pboard${isActive ? ' active' : ''}">
-        <header><span class="swatch" style="background:${p.color}"></span><h3>${esc(p.name)}</h3>
-          <span class="order" title="Position in turn order">#${idx + 1}${p.isAI ? ' · AI' : ''}</span></header>
+        <header><span class="turn" style="--pc:${p.color}" title="${ordinal(turn)} in turn order" aria-label="${ordinal(turn)} in turn order">${turn}</span><h3>${esc(p.name)}</h3>
+          <span class="order">${p.isAI ? 'computer' : 'you'}</span></header>
         <div class="stats">
-          <div class="stat"><b>${p.money}</b><span>Elektro</span></div>
+          <div class="stat">${money}<span>Elektro</span></div>
           <div class="stat"><b>${p.cities.length}</b><span>Cities</span></div>
           <div class="stat"><b>${cap}</b><span>Capacity</span></div>
         </div>
@@ -540,9 +545,44 @@
     $('opt-name').value = prefs.name;
     $('opt-opponents').value = String(prefs.opponents);
     $('opt-colors').innerHTML = PLAYER_COLORS.map((c) => `<label title="${c.name}"><input type="radio" name="color" value="${c.value}"${c.value === prefs.color ? ' checked' : ''}><span style="background:${c.value}"></span><b hidden>${c.name}</b></label>`).join('');
+    $('opt-hide').checked = !!prefs.hideMoney;
+    $(prefs.regionMode === 'pick' ? 'opt-region-pick' : 'opt-region-random').checked = true;
+    const chosen = prefs.regions || [];
+    $('opt-regions').innerHTML = Object.entries(REGIONS).map(([id, r]) =>
+      `<label><input type="checkbox" name="region" value="${id}"${chosen.includes(id) ? ' checked' : ''}> ${r.name}</label>`).join('');
+    $('setup-error').hidden = true;
+    refreshRegionPicker();
     $('setup').hidden = false;
     $('opt-name').focus();
   }
+
+  function regionsNeeded() {
+    return window.PG.RULES[Number($('opt-opponents').value) + 1].regions;
+  }
+  function chosenRegions() {
+    return [...document.querySelectorAll('#opt-regions input:checked')].map((i) => i.value);
+  }
+  // Explain what's needed and whether the current pick works.
+  function refreshRegionPicker() {
+    const picking = $('opt-region-pick').checked;
+    const need = regionsNeeded();
+    document.querySelectorAll('#opt-regions input').forEach((i) => { i.disabled = !picking; });
+    $('opt-regions').classList.toggle('off', !picking);
+    const picked = chosenRegions();
+    let hint;
+    if (!picking) hint = `${need} neighbouring regions will be picked at random.`;
+    else if (picked.length !== need) hint = `Pick ${need} regions that border each other (${picked.length} picked).`;
+    else if (!E.regionsValid(picked, need)) hint = 'Those regions don\'t all connect. Pick regions that border each other.';
+    else hint = 'Good: those regions connect.';
+    $('region-hint').textContent = hint;
+    $('region-hint').classList.toggle('ok', picking && E.regionsValid(picked, need));
+  }
+  $('setup-form').addEventListener('change', (ev) => {
+    if (ev.target.name === 'region' || ev.target.name === 'regionMode' || ev.target.id === 'opt-opponents') {
+      $('setup-error').hidden = true;
+      refreshRegionPicker();
+    }
+  });
   $('btn-new').addEventListener('click', openSetup);
   $('setup-cancel').addEventListener('click', () => { $('setup').hidden = true; });
   $('setup-form').addEventListener('submit', (ev) => {
@@ -553,7 +593,15 @@
       name: String(form.get('name') || 'You').trim().slice(0, 16) || 'You',
       opponents: Number(form.get('opponents')) || 1,
       color: String(form.get('color') || PLAYER_COLORS[0].value),
+      hideMoney: form.get('hideMoney') === 'on',
+      regionMode: form.get('regionMode') === 'pick' ? 'pick' : 'random',
+      regions: chosenRegions(),
     };
+    if (prefs.regionMode === 'pick' && !E.regionsValid(prefs.regions, regionsNeeded())) {
+      $('setup-error').textContent = `Choose exactly ${regionsNeeded()} regions that border each other, or switch to Random.`;
+      $('setup-error').hidden = false;
+      return;
+    }
     saveJSON(PREF_KEY, prefs);
     $('setup').hidden = true;
     startGame(prefs);

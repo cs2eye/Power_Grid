@@ -29,6 +29,17 @@ function checkInvariants(s) {
   for (const n of s.market) assert(PLANTS[n], `unknown plant ${n}`);
 }
 
+// Chosen regions: must be the right count and border each other.
+assert(E.regionsValid(['nw', 'sw', 'sc'], 3));
+assert(!E.regionsValid(['nw', 'ne', 'se'], 3), 'nw does not touch ne/se');
+assert(!E.regionsValid(['nw', 'sw'], 3), 'too few regions');
+assert(!E.regionsValid(['nw', 'nw', 'sw'], 3), 'duplicates');
+assert.throws(() => E.newGame({ players: [{ name: 'a' }, { name: 'b' }], regions: ['sw', 'ne', 'se'] }));
+const chosen = E.newGame({ players: [{ name: 'a' }, { name: 'b' }], regions: ['ne', 'se', 'mw'], hideAIMoney: true });
+assert.deepStrictEqual(chosen.regions, ['ne', 'se', 'mw']);
+assert(chosen.activeCities.every((id) => ['ne', 'se', 'mw'].includes(globalThis.PG.CITIES[id].region)));
+assert.strictEqual(chosen.options.hideAIMoney, true);
+
 const stats = {};
 for (let g = 0; g < games; g++) {
   const n = 2 + (g % 3);
